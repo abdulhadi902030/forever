@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary My Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Dancing Script', cursive;
+            min-height: 100vh;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000 0%, #1a001a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .loading-text {
+            color: #ff69b4;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 20px;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+            animation: fadeInOut 2.5s infinite;
+        }
+
+        .loading-hearts {
+            display: flex;
+            gap: 15px;
+        }
+
+        .loading-heart {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            opacity: 0;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        /* Main Content */
+        .romantic-scene {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Message Container */
+        .message-box {
+            position: relative;
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            z-index: 10;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        /* Text Styles */
+        .anniversary-text {
+            color: #FFD700;
+            font-size: clamp(2.8rem, 10vw, 5.5rem);
+            margin: 0;
+            opacity: 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8),
+                         0 0 30px rgba(255, 105, 180, 0.6),
+                         0 0 45px rgba(255, 20, 147, 0.4);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            animation: textEntrance 2s ease-out 1s forwards,
+                       textGlow 3s ease-in-out infinite;
+        }
+
+        .love-text {
+            color: #FF69B4;
+            font-size: clamp(2.5rem, 9vw, 4.5rem);
+            margin: 0;
+            opacity: 0;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.8),
+                         0 0 30px rgba(255, 20, 147, 0.6),
+                         0 0 45px rgba(255, 0, 128, 0.4);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            animation: textEntrance 2s ease-out 3s forwards,
+                       heartbeat 1.8s ease-in-out ,
+                       textGlow 3s ease-in-out infinite;
+        }
+
+        .signature {
+            font-family: 'Sacramento', cursive;
+            font-size: clamp(2rem, 7vw, 3rem);
+            color: #fff;
+            opacity: 0;
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            animation: fadeIn 2s ease-out 5s forwards;
+        }
+
+        .heart {
+        margin-top: 100px;
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite,
+                       float 3s ease-in-out infinite alternate;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: float-up 8s linear infinite;
+            will-change: transform;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 20%, transparent 70%);
+            box-shadow: 0 0 10px 2px #fff,
+                        0 0 20px 5px #FF69B4;
+            opacity: 0;
+            animation: sparkle 2s ease-out infinite;
+            will-change: transform, opacity;
+        }
+
+        .petal {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ff69b4" d="M50 0C30 20 10 30 0 50c10 20 30 30 50 50 20-20 40-30 50-50C90 30 70 20 50 0z"/></svg>') no-repeat;
+            background-size: contain;
+            opacity: 0;
+            animation: float-down 10s linear infinite;
+            will-change: transform;
+        }
+
+        /* Background Effects */
+        .romantic-light {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            left: -50%;
+            top: -50%;
+            background: radial-gradient(circle at center,
+                    rgba(255, 105, 180, 0.1) 0%,
+                    rgba(255, 20, 147, 0.05) 50%,
+                    transparent 70%);
+            animation: lightPulse 12s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            /* background: radial-gradient(circle at 30% 30%, #fff 0%, #FFD700 50%, transparent 70%); */
+            border-radius: 50%;
+            box-shadow: 0 0 40px 10px rgba(255, 215, 0, 0.3);
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        /* Animations */
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+
+        @keyframes textEntrance {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.8) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8),
+                             0 0 30px rgba(255, 105, 180, 0.6),
+                             0 0 45px rgba(255, 20, 147, 0.4); }
+            50% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.9),
+                          0 0 40px rgba(255, 105, 180, 0.8),
+                          0 0 60px rgba(255, 20, 147, 0.6); }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            14% { transform: translate(-50%, -50%) scale(1.1); }
+            28% { transform: translate(-50%, -50%) scale(1); }
+            42% { transform: translate(-50%, -50%) scale(1.2); }
+            70% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.3);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float-down {
+            0% {
+                transform: translateY(-100px) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1) rotate(180deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes lightPulse {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.95);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 0.2;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Interactive Hearts */
+        .interactive-zone {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .moon {
+                width: 60px;
+                height: 60px;
+                top: 5%;
+                right: 5%;
+            }
+            
+            .loading-hearts {
+                gap: 10px;
+            }
+            
+            .signature {
+                bottom: 15%;
+            }
+            
+            .floating-heart {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .anniversary-text {
+                font-size: clamp(2.5rem, 12vw, 3.5rem);
+            }
+            
+            .love-text {
+                font-size: clamp(2.2rem, 11vw, 3.2rem);
+            }
+            
+            .signature {
+                font-size: clamp(1.8rem, 9vw, 2.5rem);
+                bottom: 25%;
+            }
+            
+            .petal {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">Preparing something special...</div>
+        <div class="loading-hearts">
+            <div class="loading-heart" style="animation-delay: 0s">💖</div>
+            <div class="loading-heart" style="animation-delay: 0.3s">💗</div>
+            <div class="loading-heart" style="animation-delay: 0.6s">💓</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="romantic-scene">
+        <!-- <div class="moon"></div> -->
+        <div class="romantic-light"></div>
+        
+        <div class="message-box">
+            <h1 class="anniversary-text">Happy Anniversary</h1>
+            
+            <h1 class="love-text">I love you meri jaana <span class="heart">💖</span></h1>
+           <br><br>
+            <div class="signature">Forever yours</div>
+            <br><br><br>
+            <br><br><br>
+        </div>
+        
+        <div class="floating-elements" id="floatingElements"></div>
+        
+        <!-- Interactive zone for mobile touch -->
+        <div class="interactive-zone" id="interactiveZone"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create floating elements
+            createRomanticElements();
+            
+            // Hide loading screen after animation
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                    // Start music on mobile after loading
+                    playMobileMusic();
+                }, 1500);
+            }, 3000);
+            
+            // Setup interactive elements
+            setupInteractivity();
+        });
+
+        function createRomanticElements() {
+            const container = document.getElementById('floatingElements');
+            const heartIcons = ['💖', '💗', '💓', '💘', '💝', '💞', '💕', '💟'];
+            
+            // Create floating hearts
+            for (let i = 0; i < 40; i++) {
+                createFloatingHeart(container, heartIcons);
+            }
+            
+            // Create sparkles
+            for (let i = 0; i < 60; i++) {
+                createSparkle(container);
+            }
+            
+            // Create rose petals
+            for (let i = 0; i < 30; i++) {
+                createPetal(container);
+            }
+        }
+        
+        function createFloatingHeart(container, heartIcons) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            
+            const size = Math.random() * 1.8 + 1;
+            const posX = Math.random() * 100;
+            const delay = Math.random() * 8;
+            const duration = Math.random() * 6 + 6;
+            const colorHue = Math.random() * 60 + 320;
+            const color = `hsl(${colorHue}, 100%, 70%)`;
+            
+            heart.style.fontSize = `${size}rem`;
+            heart.style.left = `${posX}%`;
+            heart.style.animationDelay = `${delay}s`;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.color = color;
+            heart.style.filter = `drop-shadow(0 0 8px ${color})`;
+            
+            container.appendChild(heart);
+        }
+        
+        function createSparkle(container) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            const size = Math.random() * 8 + 4;
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 2 + 1.5;
+            const colorHue = Math.random() * 60 + 320;
+            const color = `hsl(${colorHue}, 100%, 85%)`;
+            
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${posX}%`;
+            sparkle.style.top = `${posY}%`;
+            sparkle.style.animationDelay = `${delay}s`;
+            sparkle.style.animationDuration = `${duration}s`;
+            sparkle.style.background = `radial-gradient(circle, ${color} 30%, transparent 80%)`;
+            
+            container.appendChild(sparkle);
+        }
+        
+        function createPetal(container) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            
+            const size = Math.random() * 1.5 + 0.8;
+            const posX = Math.random() * 100;
+            const delay = Math.random() * 10;
+            const duration = Math.random() * 8 + 8;
+            const rotation = Math.random() * 360;
+            const opacity = Math.random() * 0.7 + 0.3;
+            
+            petal.style.width = `${size * 15}px`;
+            petal.style.height = `${size * 15}px`;
+            petal.style.left = `${posX}%`;
+            petal.style.animationDelay = `${delay}s`;
+            petal.style.animationDuration = `${duration}s`;
+            petal.style.opacity = opacity;
+            petal.style.transform = `rotate(${rotation}deg)`;
+            
+            container.appendChild(petal);
+        }
+        
+        function setupInteractivity() {
+            const interactiveZone = document.getElementById('interactiveZone');
+            const container = document.getElementById('floatingElements');
+            const heartIcons = ['💖', '💗', '💓', '💘', '💝', '💞'];
+            
+            // Handle both mouse and touch events
+            interactiveZone.addEventListener('click', handleInteraction);
+            interactiveZone.addEventListener('touchstart', handleInteraction);
+            
+            function handleInteraction(e) {
+                // Get position
+                let x, y;
+                if (e.type === 'touchstart') {
+                    x = e.touches[0].clientX;
+                    y = e.touches[0].clientY;
+                } else {
+                    x = e.clientX;
+                    y = e.clientY;
+                }
+                
+                // Create burst of hearts at interaction point
+                for (let i = 0; i < 8; i++) {
+                    createBurstHeart(container, heartIcons, x, y);
+                }
+            }
+        }
+        
+        function createBurstHeart(container, heartIcons, x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            
+            const size = Math.random() * 1.5 + 1;
+            const colorHue = Math.random() * 60 + 320;
+            const color = `hsl(${colorHue}, 100%, 70%)`;
+            const duration = Math.random() * 3 + 2;
+            
+            // Position at click/touch point
+            heart.style.position = 'absolute';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            heart.style.fontSize = `${size}rem`;
+            heart.style.color = color;
+            heart.style.filter = `drop-shadow(0 0 8px ${color})`;
+            heart.style.animation = `burst-animation ${duration}s ease-out forwards`;
+            heart.style.willChange = 'transform, opacity';
+            
+            // Define burst animation
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 100 + 50;
+            const xEnd = x + Math.cos(angle) * distance;
+            const yEnd = y - Math.sin(angle) * distance - 100;
+            
+            const keyframes = `
+                @keyframes burst-animation {
+                    0% {
+                        transform: translate(0, 0) scale(0.5);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translate(${xEnd - x}px, ${yEnd - y}px) scale(1.5);
+                        opacity: 0;
+                    }
+                }
+            `;
+            
+            // Add animation style
+            const styleEl = document.createElement('style');
+            styleEl.innerHTML = keyframes;
+            document.head.appendChild(styleEl);
+            
+            container.appendChild(heart);
+            
+            // Remove element after animation
+            setTimeout(() => {
+                heart.remove();
+                styleEl.remove();
+            }, duration * 1000);
+        }
+        
+        function playMobileMusic() {
+            // This is a placeholder for mobile music play
+            // On actual implementation, you would uncomment and use this:
+            
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                const audio = new Audio('romantic-music.mp3');
+                audio.loop = true;
+                audio.volume = 0.3;
+                
+                // Mobile browsers require user interaction to play audio
+                document.body.addEventListener('click', function once() {
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    document.body.removeEventListener('click', once);
+                }, { once: true });
+            }
+            
+        }
+    </script>
+</body>
+</html>
